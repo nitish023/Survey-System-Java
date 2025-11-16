@@ -1,10 +1,15 @@
+// Nitish Chawla, nkc47
+
 import java.io.*;
 import java.util.ArrayList;
 
+// Main driver class for the console-based Survey System.
 public class Main {
     private static Input input = new Input();
     private static Output output = new Output();
+    // Currently loaded survey
     private static Survey currentSurvey = null;
+    // Relative directories for serialized surveys and responses
     private static final String SURVEY_DIR = "surveys";
     private static final String RESPONSES_DIR = "responses";
 
@@ -37,7 +42,7 @@ public class Main {
                     modifySurvey();
                     break;
                 case 7:
-                    output.println("Survey Complete");
+                    output.println("Exiting Survey System...");
                     working = false;
                     break;
             }
@@ -45,6 +50,7 @@ public class Main {
         input.close();
     }
 
+    // Displays main menu options.
     private static void displayMainMenu() {
         output.println("\nMain Menu");
         output.println("1) Create a new Survey");
@@ -57,6 +63,7 @@ public class Main {
         output.println("---------------------------\n");
     }
 
+    // Creates a new survey and allows user to add questions to it.
     private static void createNewSurvey() {
         output.println("Create a new Survey");
         String surveyName = input.readLine("Enter survey name: ");
@@ -67,6 +74,10 @@ public class Main {
         while (adding) {
             displayCreateMenu();
             int choice = input.readInt("Enter choice: ");
+            if (choice < 1 || choice > 7) {
+                output.println("Invalid choice. Please try again.");
+                continue;
+            }
             switch (choice) {
                 case 1:
                     addTrueFalseQuestion();
@@ -94,6 +105,7 @@ public class Main {
         }
     }
 
+    // Displays the submenu for adding different types of questions.
     private static void displayCreateMenu() {
         output.println("\n Add Question Menu");
         output.println("1) Add a new T/F question");
@@ -106,22 +118,17 @@ public class Main {
         output.println("---------------------------\n");
     }
 
+    // Adds a True/False question to the current survey.
     private static void addTrueFalseQuestion() {
         output.println("Add true or false");
         String prompt = input.readLine("Enter prompt:\n");
-        String multipleStr = input.readLine("Multiple responses? (yes/no): ");
-        TrueFalse question;
-        if (multipleStr.toLowerCase().startsWith("y")) {
-            int numResponses = input.readInt("Number of responses: ");
-            question = new TrueFalse(prompt, numResponses);
-        } else {
-            question = new TrueFalse(prompt);
-        }
+        TrueFalse question = new TrueFalse(prompt);
         currentSurvey.addQuestion(question);
         output.println("Question added.");
 
     }
 
+    // Adds a Multiple Choice question to the current survey.
     private static void addMultipleChoiceQuestion() {
         output.println("Add multiple choice question");
         String prompt = input.readLine("Enter prompt:\n");
@@ -144,6 +151,7 @@ public class Main {
         output.println("Question added.");
     }
 
+    // Adds a Short Answer question to the current survey.
     private static void addShortAnswerQuestion() {
         output.println("Add short answer question");
         String prompt = input.readLine("Enter prompt:\n");
@@ -160,6 +168,7 @@ public class Main {
         output.println("Question added.");
     }
 
+    // Adds an Essay question to the current survey.
     private static void addEssayQuestion() {
         output.println("Add essay question");
         String prompt = input.readLine("Enter prompt:\n");
@@ -176,6 +185,7 @@ public class Main {
         output.println("Question added.");
     }
 
+    // Adds a Date question to the current survey.
     private static void addDateQuestion() {
         output.println("Add date question");
         String prompt = input.readLine("Enter prompt:\n");
@@ -191,6 +201,7 @@ public class Main {
         output.println("Question added.");
     }
 
+    // Adds a Matching question to the current survey.
     private static void addMatchingQuestion() {
         output.println("Add matching question");
         String prompt = input.readLine("Enter prompt:\n");
@@ -214,19 +225,21 @@ public class Main {
 
     }
 
+    // Displays the currently loaded survey.
     private static void displaySurvey() {
         if (currentSurvey == null) {
-            output.println("No survey selected.");
+            output.println("You must have a survey loaded in order to display it.");
             return;
         }
         currentSurvey.display(output);
     }
 
+    // Loads a survey from the surveys directory using serialization.
     private static void loadSurvey() {
         output.println("Loading survey..");
         File surveyFolder = new File(SURVEY_DIR);
         File[] files = surveyFolder.listFiles((dir, name) -> name.endsWith(".ser"));
-        if (files == null) {
+        if (files == null || files.length == 0) {
             output.println("No survey found.");
             return;
         }
@@ -235,6 +248,10 @@ public class Main {
             output.println((i+1) + ") " + files[i].getName().replace(".ser", ""));
         }
         int choice = input.readInt("Choice: ");
+        if (choice < 1 || choice > files.length) {
+            output.println("Invalid choice.");
+            return;
+        }
         File selected = files[choice-1];
 
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(selected))) {
@@ -246,9 +263,10 @@ public class Main {
 
     }
 
+    // Saves the loaded survey to a file using serialization.
     private static void saveSurvey() {
         if (currentSurvey == null) {
-            output.println("No survey selected.");
+            output.println("You must have a survey loaded in order to save it.");
             return;
         }
         output.println("Saving survey..");
@@ -262,9 +280,10 @@ public class Main {
         }
     }
 
+    // Takes the loaded survey and saves the user's responses.
     private static void takeSurvey() {
         if (currentSurvey == null) {
-            output.println("No survey selected.");
+            output.println("You must have a survey loaded in order to take it.");
             return;
         }
 
@@ -272,31 +291,41 @@ public class Main {
         saveResponses(responses);
     }
 
+    // Serializes and savesresponses to the responses directory.
     private static void saveResponses(ArrayList<Response> responses) {
         String filename = currentSurvey.getName().replaceAll("\\s", "_") + "_response_" + System.currentTimeMillis() + ".ser";
-        File file = new File(SURVEY_DIR, filename);
+        File file = new File(RESPONSES_DIR, filename);
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
             out.writeObject(responses);
             output.println("Responses saved.");
         } catch (IOException e) {
-            output.println("Survey could not be saved.");
+            output.println("Responses could not be saved.");
         }
     }
 
+    // Allows user to select and modify a question in the current survey.
     private static void modifySurvey() {
         if (currentSurvey == null) {
-            output.println("No survey selected.");
+            output.println("You must have a survey loaded in order to modify it.");
             return;
         }
         if (currentSurvey.isEmpty()) {
             output.println("\nSurvey is empty.");
             return;
         }
+        currentSurvey.display(output);
 
         output.println("Modifying survey..");
         int questionNum = input.readInt("What question do you wish to modify (1-" + currentSurvey.getSize() + "): ");
+
+        if (questionNum < 1 || questionNum > currentSurvey.getSize()) {
+            output.println("Invalid question number.");
+            return;
+        }
+        currentSurvey.modifyQuestion(questionNum - 1, input, output);
     }
 
+    // Creates the directories if they do not already exist.
     private static void createDirectories() {
         File surveyDir = new File(SURVEY_DIR);
         File responseDir = new File(RESPONSES_DIR);

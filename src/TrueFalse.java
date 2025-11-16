@@ -1,3 +1,4 @@
+// Nitish Chawla, nkc47
 import java.util.ArrayList;
 
 public class TrueFalse extends MultipleChoice {
@@ -24,23 +25,17 @@ public class TrueFalse extends MultipleChoice {
     @Override
     public ArrayList<String> takeAns(Input input, Output output) {
         ArrayList<String> answers = new ArrayList<>();
-        for (int i = 0; i < numResponses; i++) {
-            int choice;
-            while (true) {
-                if (numResponses > 1) {
-                    choice = input.readInt("Response " + (i + 1) + " (1=True, 2=False");
-                } else {
-                    choice = input.readInt("");
-                }
-                if (choice == 1) {
-                    answers.add("True");
-                    break;
-                } else if (choice == 2) {
-                    answers.add("False");
-                    break;
-                } else {
-                    output.println("Invalid input. Please enter 1 for True or 2 for False");
-                }
+        int choice;
+        while (true) {
+            choice = input.readInt("Enter 1 for True or 2 for False: ");
+            if (choice == 1) {
+                answers.add("True");
+                break;
+            } else if (choice == 2) {
+                answers.add("False");
+                break;
+            } else {
+                output.println("Invalid input.");
             }
         }
         return answers;

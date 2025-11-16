@@ -1,7 +1,10 @@
+// Nitish Chawla, nkc47
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+//  Represents a set of answers for a single question in a survey.
 public class Response implements Serializable {
     private static final long serialVersionUID = 1L;
     private ArrayList<String> answers;

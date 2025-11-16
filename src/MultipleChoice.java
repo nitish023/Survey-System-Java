@@ -1,3 +1,4 @@
+// Nitish Chawla, nkc47
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,23 +85,23 @@ public class MultipleChoice extends Question {
         String editChoices = input.readLine("Do you wish to modify choices? ");
         if (editChoices.toLowerCase().startsWith("y")) {
             output.println("Current choices:");
-            for (int i = 0; i < numResponses; i++) {
+            for (int i = 0; i < options.size(); i++) {
                 output.println((char) ('A' + i) + ") " + options.get(i));
-                if (i < options.size() - 1) {
-                    output.print(" ");
+            }
+            String editLetter = input.readLine("Which choice do you want to modify?").toUpperCase();
+            if (editLetter.length() == 1) {
+                int index = editLetter.charAt(0) - 'A';
+                if (index >= 0 && index < options.size()) {
+                    String newVal = input.readLine("New value:\n");
+                    if (!newVal.isEmpty()) {
+                        options.set(index, newVal);
+                    }
+                } else {
+                    output.println("Invalid choice.");
                 }
+            } else {
+                output.println("Invalid input.");
             }
         }
-        output.println();
-        String editLetter = input.readLine("").toUpperCase();
-        if (editLetter.length() == 1) {
-            int index = editLetter.charAt(0) - 'A';
-            if (index >= 0 && index < options.size()) {
-                String newVal = input.readLine("New value:\n");
-                if (!newVal.isEmpty()) {
-                    options.set(index, newVal);
-                }
-            }
-        }
-   }
+    }
 }

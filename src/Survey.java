@@ -1,6 +1,8 @@
+// Nitish Chawla, nkc47
 import java.io.Serializable;
 import java.util.ArrayList;
 
+// Represents a Survey, which has a name and a list of Questions.
 public class Survey implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;

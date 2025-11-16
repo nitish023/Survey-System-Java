@@ -1,7 +1,9 @@
+// Nitish Chawla, nkc47
+
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+// Abstract base class for all question types in a Survey.
 public abstract class Question implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String prompt;

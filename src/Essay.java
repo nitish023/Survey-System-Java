@@ -1,3 +1,4 @@
+// Nitish Chawla, nkc47
 import java.util.ArrayList;
 
 public class Essay extends Question {
@@ -17,22 +18,26 @@ public class Essay extends Question {
     }
 
     @Override
-    public ArrayList<String> takeAns(Input input, Output output){
+    public ArrayList<String> takeAns(Input input, Output output) {
         ArrayList<String> answers = new ArrayList<>();
         for (int i = 0; i < numResponses; i++) {
             if (numResponses > 1) {
-                output.println((char)('A' + i) + ")");
+                output.println((char) ('A' + i) + ")");
             }
-            String essay = "";
+            String essay;
             while (true) {
-                String line = input.readLine();
-                if (line.trim().isEmpty()) {
+                output.println("Enter your essay:");
+                essay = "";
+                while (true) {
+                    String line = input.readLine();
+                    if (line.isEmpty()) break;
+                    if (!essay.isEmpty()) essay += "\n";
+                    essay += line;
+                }
+                if (!essay.trim().isEmpty()) {
                     break;
                 }
-                if (!essay.isEmpty()) {
-                    essay = essay + "\n";
-                }
-                essay = essay + line;
+
             }
             answers.add(essay);
         }

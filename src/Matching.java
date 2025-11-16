@@ -1,3 +1,4 @@
+// Nitish Chawla, nkc47
 import java.util.ArrayList;
 
 public class Matching extends Question {
@@ -82,6 +83,7 @@ public class Matching extends Question {
     @Override
     public ArrayList<String> takeAns(Input input, Output output) {
         ArrayList<String> answers = new ArrayList<>();
+        output.println("Enter your matches as a letter and number: A2");
         for (int i = 0; i < this.leftCol.size(); i++) {
             while (true) {
                 String match = input.readLine("");
